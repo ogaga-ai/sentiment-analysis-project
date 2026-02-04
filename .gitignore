@@ -1,0 +1,43 @@
+# Data files (too large for git)
+data/raw/*
+data/processed/*.csv
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+!data/processed/*.png
+
+# Model files
+models/*.pkl
+models/*.pt
+models/*.bin
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+ENV/
+env/
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment
+.env
+.env.local
+
+# Logs
+*.log
+logs/
