@@ -117,6 +117,37 @@
 - Different dataset formats required different loading approaches (CSV vs bz2 vs JSON)
 - Yelp star 3 reviews had to be dropped — neutral reviews don't fit a binary classification task
 
+### Critical Lesson: NaN vs Empty Strings (Discovered in Phase 3)
+
+**The Bug:** In Phase 3, TF-IDF threw an error: `ValueError: np.nan is an invalid document`
+
+**Wait — didn't we already drop NaN values in Phase 2?** Yes, but here's what happened:
+
+| What We Did | What We Missed |
+|-------------|----------------|
+| Dropped NaN from original `review` column | Some reviews were ONLY HTML/special characters |
+| Created `clean_review` after cleaning | These became empty strings `""`, not NaN |
+| Saved to CSV | Empty strings don't trigger `dropna()` |
+
+**Example:**
+```
+Original:  "<br/><br/>!!!"
+After cleaning: ""  ← empty string, NOT NaN
+```
+
+**The Fix:** After cleaning, also check for empty strings:
+```python
+df = df[df['clean_review'].str.strip().astype(bool)]
+```
+
+**Key Takeaways:**
+1. NaN and empty strings are DIFFERENT — both cause problems, but only NaN gets caught by `dropna()`
+2. Data cleaning is iterative — you discover edge cases later in the pipeline
+3. Always validate after every transformation AND after loading from file
+4. Real-world data is messy in ways you don't expect
+
+> "I thought the data was clean. Then Phase 3 broke. Data cleaning is never truly 'done' — it's a continuous process."
+
 ### Aha Moments
 > "I don't need to understand everything from articles first. Loading real data and asking questions about each line of code teaches me faster."
 
@@ -140,26 +171,64 @@
 
 ## Phase 3: Baseline Model
 
-### Date Started:
+### Date Started: 2026-02-06
 
 ### What I Did
-
+- Installed scikit-learn (`pip install scikit-learn` — learned that import name `sklearn` differs from package name)
+- Loaded cleaned dataset (238,636 reviews after removing NaN and empty strings)
+- Separated data into X (input reviews) and y (sentiment labels)
+- Split data 80/20 into training (190,908) and test (47,728) sets
+- Converted text to numbers using TF-IDF vectorization (50,000 features)
+- Trained a Logistic Regression model on 190K reviews (took 1.7 seconds!)
+- Made predictions on 47,728 unseen reviews
+- Evaluated model performance with accuracy, classification report, and confusion matrix
 
 ### Why I Did It
-
+- **Need a baseline** — you can't improve what you don't measure
+- **Logistic Regression first** — simple, fast, interpretable; perfect starting point before complex models
+- **TF-IDF** — converts human-readable text into numbers the model can learn from
+- **Train/test split** — model must prove it works on data it has never seen (no cheating!)
+- **Evaluation metrics** — accuracy alone doesn't tell the full story; need precision, recall, F1
 
 ### What I Learned
-
+- `sklearn` (scikit-learn) follows a consistent pattern: create → fit → predict → evaluate
+- Every sklearn model uses the same API: `model.fit(X_train, y_train)` then `model.predict(X_test)`
+- TF-IDF converts each review into a vector of 50,000 numbers — one per unique word
+- `fit_transform()` on training data, `transform()` on test data — never fit on test (data leakage!)
+- Training on 190K reviews took only 1.7 seconds — Logistic Regression is fast
+- A single missing bracket (`df[...]`) turned an entire DataFrame into a boolean Series — one character can break everything
+- NaN and empty strings are different — cleaning data is iterative, not one-and-done
+- "Model training complete" shows no visible output — the learning happens internally through math
+- Model predictions are just arrays of labels — compare against actual labels to measure performance
+- Package names and import names can differ: `pip install scikit-learn` but `import sklearn`
 
 ### Model Performance
 | Metric | Score |
 |--------|-------|
-| Accuracy | |
-| Precision | |
-| Recall | |
-| F1 Score | |
+| Accuracy | 91.4% |
+| Precision | TBD (run Part 8b) |
+| Recall | TBD (run Part 8b) |
+| F1 Score | TBD (run Part 8b) |
 
 ### What Surprised Me
+- 91.4% accuracy from a simple Logistic Regression — sometimes simple works
+- First 10 predictions matched actual values perfectly (10/10)
+- Training on 190K reviews took under 2 seconds
+- One missing bracket broke the entire pipeline — debugging is a real skill
+
+### Challenges Faced
+- `ModuleNotFoundError: No module named 'sklearn'` — installed via `pip install scikit-learn`
+- `ValueError: np.nan is an invalid document` — NaN values in clean_review from Phase 2
+- Empty strings not caught by `dropna()` — needed `df[df['clean_review'].str.strip() != '']`
+- `df = df['clean_review'].str.strip() != ''` overwrote DataFrame with boolean Series — missing `df[...]`
+- `KeyError: 'clean_review'` — cascading error from Part 2 bug
+- VS Code caching old notebook versions — had to close and reopen to see changes
+- `NameError: X_train not defined` — cells must run in order (each depends on previous)
+
+### Aha Moments
+> "91.4% accuracy on my first model? Simple algorithms can be powerful."
+
+> "One missing bracket turned my DataFrame into True/False values. Debugging matters as much as coding."
 
 
 
@@ -294,6 +363,12 @@
 4. "I don't understand a thing from the articles." — Honesty about not understanding led to a better approach: hands-on coding with real data instead of reading tutorials.
 
 5. "I don't need to read all the papers first. Load the data, write the code, ask questions as I go."
+
+6. "I thought the data was clean. Then Phase 3 broke. Turns out NaN and empty strings are different — and I only checked for one."
+
+7. "91.4% accuracy on my first model. Sometimes simple works."
+
+8. "One missing bracket turned my entire DataFrame into True/False values. One character. That's all it took."
 
 ---
 
