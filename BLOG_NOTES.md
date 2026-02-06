@@ -203,12 +203,20 @@ df = df[df['clean_review'].str.strip().astype(bool)]
 - Package names and import names can differ: `pip install scikit-learn` but `import sklearn`
 
 ### Model Performance
-| Metric | Score |
-|--------|-------|
-| Accuracy | 91.4% |
-| Precision | TBD (run Part 8b) |
-| Recall | TBD (run Part 8b) |
-| F1 Score | TBD (run Part 8b) |
+| Metric | Negative | Positive | Overall |
+|--------|----------|----------|---------|
+| Precision | 90% | 92% | 91% |
+| Recall | 88% | 94% | 91% |
+| F1 Score | 89% | 93% | 91% |
+| Accuracy | — | — | 91.4% |
+
+### Confusion Matrix
+| | Predicted Negative | Predicted Positive |
+|---|---|---|
+| **Actual Negative** | 16,217 (correct) | 2,257 (wrong) |
+| **Actual Positive** | 1,824 (wrong) | 27,430 (correct) |
+
+**Key Insight:** The model is better at predicting positive reviews (94% recall) than negative ones (88% recall). It misses more negative reviews than positive ones.
 
 ### What Surprised Me
 - 91.4% accuracy from a simple Logistic Regression — sometimes simple works
