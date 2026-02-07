@@ -41,3 +41,7 @@ Thumbs.db
 # Logs
 *.log
 logs/
+
+# Personal notes (kept locally)
+BLOG_NOTES.md
+SKILLS_LEARNED.md
