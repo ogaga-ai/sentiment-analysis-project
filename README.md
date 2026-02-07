@@ -28,6 +28,34 @@ A general-purpose sentiment analysis tool that classifies text reviews as positi
 | Marketing teams        | Measure campaign sentiment          |
 | Researchers / Students | Analyze public opinion datasets     |
 
+## Project Structure
+
+```
+sentiment-analysis-project/
+├── data/
+│   ├── raw/               # Original datasets (not tracked)
+│   └── processed/         # Visualizations and cleaned data
+├── notebooks/
+│   ├── 01_data_exploration.ipynb
+│   ├── 02_data_cleaning.ipynb
+│   └── 03_baseline_model.ipynb
+├── models/
+│   ├── logistic_regression_baseline.pkl
+│   └── tfidf_vectorizer.pkl
+├── README.md
+├── requirements.txt
+└── .gitignore
+```
+
+## Datasets
+
+| Dataset | Domain | Size Used | Source |
+|---------|--------|-----------|--------|
+| IMDB Reviews | Entertainment | 50,000 | [Kaggle](https://www.kaggle.com/datasets/lakshmi25npathi/imdb-dataset-of-50k-movie-reviews) |
+| Amazon Reviews | E-commerce | 100,000 | [Kaggle](https://www.kaggle.com/datasets/bittlingmayer/amazonreviews) |
+| Yelp Reviews | Local business | 88,638 | [Kaggle](https://www.kaggle.com/datasets/yelp-dataset/yelp-dataset) |
+| **Combined** | **Multi-domain** | **238,638** | |
+
 ## Features
 
 - [x] Multi-domain training (Amazon, IMDB, Yelp)
@@ -231,34 +259,6 @@ predictions = model.predict(my_reviews_tfidf)
 | "Broke after two days. Total waste of money." | negative |
 
 ---
-
-## Project Structure
-
-```
-sentiment-analysis-project/
-├── data/
-│   ├── raw/               # Original datasets (not tracked)
-│   └── processed/         # Visualizations and cleaned data
-├── notebooks/
-│   ├── 01_data_exploration.ipynb
-│   ├── 02_data_cleaning.ipynb
-│   └── 03_baseline_model.ipynb
-├── models/
-│   ├── logistic_regression_baseline.pkl
-│   └── tfidf_vectorizer.pkl
-├── README.md
-├── requirements.txt
-└── .gitignore
-```
-
-## Datasets
-
-| Dataset | Domain | Size Used | Source |
-|---------|--------|-----------|--------|
-| IMDB Reviews | Entertainment | 50,000 | [Kaggle](https://www.kaggle.com/datasets/lakshmi25npathi/imdb-dataset-of-50k-movie-reviews) |
-| Amazon Reviews | E-commerce | 100,000 | [Kaggle](https://www.kaggle.com/datasets/bittlingmayer/amazonreviews) |
-| Yelp Reviews | Local business | 88,638 | [Kaggle](https://www.kaggle.com/datasets/yelp-dataset/yelp-dataset) |
-| **Combined** | **Multi-domain** | **238,638** | |
 
 ## Installation
 
