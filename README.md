@@ -8,15 +8,6 @@ A general-purpose sentiment analysis tool that classifies text reviews as positi
 
 **Solution:** A sentiment classifier built with TF-IDF and Logistic Regression, achieving 91.4% accuracy on unseen data.
 
-## Current Results
-
-| Metric | Negative | Positive | Overall |
-|--------|----------|----------|---------|
-| Precision | 90% | 92% | 91% |
-| Recall | 88% | 94% | 91% |
-| F1 Score | 89% | 93% | 91% |
-| **Accuracy** | — | — | **91.4%** |
-
 ## Target Users
 
 | User                   | Use Case                            |
@@ -55,6 +46,15 @@ sentiment-analysis-project/
 | Amazon Reviews | E-commerce | 100,000 | [Kaggle](https://www.kaggle.com/datasets/bittlingmayer/amazonreviews) |
 | Yelp Reviews | Local business | 88,638 | [Kaggle](https://www.kaggle.com/datasets/yelp-dataset/yelp-dataset) |
 | **Combined** | **Multi-domain** | **238,638** | |
+
+## Current Results
+
+| Metric | Negative | Positive | Overall |
+|--------|----------|----------|---------|
+| Precision | 90% | 92% | 91% |
+| Recall | 88% | 94% | 91% |
+| F1 Score | 89% | 93% | 91% |
+| **Accuracy** | — | — | **91.4%** |
 
 ## Features
 
