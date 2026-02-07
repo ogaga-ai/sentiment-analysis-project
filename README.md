@@ -1,12 +1,21 @@
 # Sentiment Analysis Tool
 
-A general-purpose sentiment analysis tool that classifies text (reviews, feedback, comments) as positive neutral or negative.
+A general-purpose sentiment analysis tool that classifies text reviews as positive or negative, trained on 238K+ reviews from three domains.
 
 ## Project Overview
 
 **Problem:** Businesses, researchers, and individuals need to quickly understand sentiment in large volumes of text data.
 
-**Solution:** develop a user-friendly tool that analyzes text sentiment with explainability and bias-awareness.
+**Solution:** A sentiment classifier built with TF-IDF and Logistic Regression, achieving 91.4% accuracy on unseen data.
+
+## Current Results
+
+| Metric | Score |
+|--------|-------|
+| Accuracy | 91.4% |
+| Precision (positive) | 92% |
+| Recall (positive) | 94% |
+| F1 Score (overall) | 91% |
 
 ## Target Users
 
@@ -21,23 +30,31 @@ A general-purpose sentiment analysis tool that classifies text (reviews, feedbac
 
 ## Features
 
-- Single text analysis (paste and predict)
-- Batch CSV upload for bulk analysis
-- Confidence scores with predictions
-- Word highlighting (explainability via SHAP/LIME)
-- Bias analysis and documentation
+- [x] Multi-domain training (Amazon, IMDB, Yelp)
+- [x] Text preprocessing pipeline (HTML removal, normalization)
+- [x] TF-IDF + Logistic Regression baseline (91.4% accuracy)
+- [x] Model evaluation (precision, recall, F1, confusion matrix)
+- [x] Custom review prediction
+- [ ] Model comparison (Naive Bayes, SVM, Random Forest)
+- [ ] Deep learning (DistilBERT fine-tuning)
+- [ ] Explainability (SHAP/LIME)
+- [ ] Bias analysis
+- [ ] Streamlit web app
 
 ## Project Structure
 
 ```
 sentiment-analysis-project/
 ├── data/
-│   ├── raw/           # Original datasets
-│   └── processed/     # Cleaned datasets
-├── notebooks/         # Jupyter notebooks for exploration
-├── src/               # Source code
-├── models/            # Saved model files
-├── app/               # Streamlit application
+│   ├── raw/               # Original datasets (not tracked)
+│   └── processed/         # Visualizations and cleaned data
+├── notebooks/
+│   ├── 01_data_exploration.ipynb
+│   ├── 02_data_cleaning.ipynb
+│   └── 03_baseline_model.ipynb
+├── models/
+│   ├── logistic_regression_baseline.pkl
+│   └── tfidf_vectorizer.pkl
 ├── README.md
 ├── requirements.txt
 └── .gitignore
@@ -45,22 +62,19 @@ sentiment-analysis-project/
 
 ## Datasets
 
-| Dataset        | Domain         | Size        | Source                                                                                      |
+| Dataset        | Domain         | Size Used   | Source                                                                                      |
 | -------------- | -------------- | ----------- | ------------------------------------------------------------------------------------------- |
-| Amazon Reviews | E-commerce     | 4M reviews  | [Kaggle](https://www.kaggle.com/datasets/bittlingmayer/amazonreviews)                       |
-| Yelp Reviews   | Local business | 5M reviews  | [Kaggle](https://www.kaggle.com/datasets/yelp-dataset/yelp-dataset)                         |
-| IMDB Reviews   | Entertainment  | 50K reviews | [Kaggle](https://www.kaggle.com/datasets/lakshmi25npathi/imdb-dataset-of-50k-movie-reviews) |
+| IMDB Reviews   | Entertainment  | 50,000      | [Kaggle](https://www.kaggle.com/datasets/lakshmi25npathi/imdb-dataset-of-50k-movie-reviews) |
+| Amazon Reviews | E-commerce     | 100,000     | [Kaggle](https://www.kaggle.com/datasets/bittlingmayer/amazonreviews)                       |
+| Yelp Reviews   | Local business | 88,638      | [Kaggle](https://www.kaggle.com/datasets/yelp-dataset/yelp-dataset)                         |
+| **Combined**   | **Multi-domain** | **238,638** |                                                                                           |
 
 ## Installation
 
 ```bash
 # Clone the repository
-git clone <your-repo-url>
+git clone https://github.com/ogaga-ai/sentiment-analysis-project.git
 cd sentiment-analysis-project
-
-# Create virtual environment
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
 
 # Install dependencies
 pip install -r requirements.txt
@@ -69,12 +83,18 @@ pip install -r requirements.txt
 ## Usage
 
 ```python
-# Example usage (after training)
-from src.model import SentimentAnalyzer
+import joblib
 
-analyzer = SentimentAnalyzer()
-result = analyzer.predict("This product is amazing!")
-print(result)  # {'sentiment': 'positive', 'confidence': 0.95}
+# Load the saved model and vectorizer
+model = joblib.load('models/logistic_regression_baseline.pkl')
+tfidf = joblib.load('models/tfidf_vectorizer.pkl')
+
+# Predict sentiment on any text
+review = "This product is absolutely amazing!"
+review_tfidf = tfidf.transform([review])
+prediction = model.predict(review_tfidf)
+
+print(prediction)  # ['positive']
 ```
 
 ## Limitations & Ethical Considerations
@@ -84,6 +104,7 @@ This model has known limitations:
 - **Sarcasm/Irony:** May misclassify sarcastic statements
 - **Dialect bias:** Trained primarily on standard English
 - **Domain shift:** Performance varies across different review types
+- **Neutral text:** Forced into positive/negative — no neutral option
 - **Context:** Cannot understand broader context or nuance
 
 ### Responsible Use
@@ -94,14 +115,11 @@ This tool should NOT be used for:
 - Automated decision-making without human oversight
 - Suppressing legitimate negative feedback
 
-For detailed bias analysis, see [notebooks/07_bias_analysis.ipynb](notebooks/07_bias_analysis.ipynb).
-
 ## License
 
 MIT License
 
 ## Acknowledgments
 
-- Hugging Face for transformer models
 - Kaggle for datasets
-- Research papers cited in documentation
+- scikit-learn for ML tools
