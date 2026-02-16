@@ -29,10 +29,15 @@ sentiment-analysis-project/
 ├── notebooks/
 │   ├── 01_data_exploration.ipynb
 │   ├── 02_data_cleaning.ipynb
-│   └── 03_baseline_model.ipynb
+│   ├── 03_baseline_model.ipynb
+│   └── 04_model_comparison.ipynb
 ├── models/
 │   ├── logistic_regression_baseline.pkl
-│   └── tfidf_vectorizer.pkl
+│   ├── tfidf_vectorizer.pkl
+│   ├── naive_bayes_model.pkl
+│   ├── linear_svm_model.pkl
+│   ├── random_forest_model.pkl
+│   └── best_model_phase4.pkl
 ├── README.md
 ├── requirements.txt
 └── .gitignore
@@ -63,7 +68,7 @@ sentiment-analysis-project/
 - [x] TF-IDF + Logistic Regression baseline (91.4% accuracy)
 - [x] Model evaluation (precision, recall, F1, confusion matrix)
 - [x] Custom review prediction
-- [ ] Model comparison (Naive Bayes, SVM, Random Forest)
+- [x] Model comparison (Naive Bayes, SVM, Random Forest)
 - [ ] Deep learning (DistilBERT fine-tuning)
 - [ ] Explainability (SHAP/LIME)
 - [ ] Bias analysis
@@ -257,6 +262,54 @@ predictions = model.predict(my_reviews_tfidf)
 | "It was okay, nothing special but not bad either." | negative |
 | "The quality is outstanding and the price is fair." | positive |
 | "Broke after two days. Total waste of money." | negative |
+
+---
+
+## Phase 4: Model Comparison (`04_model_comparison.ipynb`)
+
+Compared 4 ML algorithms on the same data to find the best performer.
+
+### Models Tested
+
+| Model | How It Works | Best For |
+|-------|-------------|----------|
+| Multinomial Naive Bayes | Probabilistic — uses Bayes' theorem | Fast text classification |
+| Linear SVM | Finds optimal decision boundary | High-dimensional sparse data |
+| Random Forest | Ensemble of 100 decision trees | Non-linear relationships |
+| Logistic Regression | Linear boundary with sigmoid function | Our Phase 3 baseline |
+
+### Key Code
+
+```python
+from sklearn.naive_bayes import MultinomialNB
+from sklearn.svm import LinearSVC
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.linear_model import LogisticRegression
+
+# Train and time each model
+for name, model in models.items():
+    start = time.time()
+    model.fit(X_train_tfidf, y_train)
+    train_time = time.time() - start
+    y_pred = model.predict(X_test_tfidf)
+```
+
+### Visualizations
+
+| Model Comparison | F1 Scores by Class |
+|:---:|:---:|
+| ![Model Comparison](data/processed/model_comparison.png) | ![F1 Comparison](data/processed/f1_comparison.png) |
+
+| All Confusion Matrices |
+|:---:|
+| ![All Confusion Matrices](data/processed/all_confusion_matrices.png) |
+
+### What We Learned
+
+- **Linear models** (SVM, Logistic Regression) excel at text classification because TF-IDF features are high-dimensional and linearly separable
+- **Naive Bayes** is the fastest to train but sacrifices some accuracy due to the independence assumption
+- **Random Forest** is powerful for tabular data but less efficient for sparse text features
+- Training time matters in production — speed vs. accuracy is a real trade-off
 
 ---
 
